@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1b1b2f;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .container {
+      background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .question {
+      margin: 20px 0 10px;
+      font-size: 20px;
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+    .options li {
+      margin: 8px 0;
+    }
+    .options button {
+      width: 100%;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #0f3460;
+      color: #fff;
+      transition: background 0.2s;
+    }
+    .options button:hover {
+      background: #162447;
+    }
+    .next-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #21e6c1;
+      color: #162447;
+    }
+    .next-btn:hover {
+      background: #1faa93;
+    }
+    .score {
+      font-size: 22px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Interactive Multiple-Choice Quiz Game</h1>
+    <div id="quiz">
+    </div>
+    <button id="nextBtn" class="next-btn" style="display:none;">Next</button>
+    <div id="result" class="score" style="display:none;"></div>
+  </div>
+  
+  <script>
+    const quizData = [
+      {
+        question: "What is the capital of France?",
+        options: ["Paris", "London", "Berlin", "Rome"],
+        answer: "Paris"
+      },
+      {
+        question: "Select the largest planet in our solar system.",
+        options: ["Earth", "Venus", "Jupiter", "Mars"],
+        answer: "Jupiter"
+      },
+    ];
+    
+    const quizContainer = document.getElementById('quiz');
+    const nextBtn = document.getElementById('nextBtn');
+    const resultDiv = document.getElementById('result');
+    
+    let currentQuestionIndex = 0;
+    let score = 0;
+    
+    function loadQuestion() {
+      const currentData = quizData[currentQuestionIndex];
+      quizContainer.innerHTML = `
+        <div class="question">${currentData.question}</div>
+        <ul class="options">
+          ${currentData.options.map(option => `<li><button onclick="selectOption(this)">${option}</button></li>`).join('')}
+        </ul>
+      `;
+      nextBtn.style.display = 'none';
+    }
+    
+    function selectOption(button) {
+      const selected = button.innerText;
+      const correct = quizData[currentQuestionIndex].answer;
+      if (selected === correct) {
+        score++;
+        button.style.background = 'limegreen';
+      } else {
+        button.style.background = 'crimson';
+      }
+    
+      const allButtons = document.querySelectorAll('.options button');
+      allButtons.forEach(btn => btn.disabled = true);
+      nextBtn.style.display = 'block';
+    }
+    
+    nextBtn.addEventListener('click', () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizData.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    });
+    
+    function showResult() {
+      quizContainer.style.display = 'none';
+      nextBtn.style.display = 'none';
+      resultDiv.style.display = 'block';
+      resultDiv.innerText = `Your score: ${score} / ${quizData.length}`;
+    }
+    
+    loadQuestion();
+  </script>
+</body>
+</html>
